@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>R.V.M Hospitals Dashboard</title>
+  <link href="rvm.png" rel="icon" sizes="16*16">
+
+
+  <!-- Bootstrap & Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+
+  <style>
+    .upload-box {
+      border: 2px dashed #ccc;
+      border-radius: 10px;
+      padding: 40px;
+      text-align: center;
+      cursor: pointer;
+      background-color: #f9f9f9;
+      transition: border 0.3s;
+    }
+
+    .upload-box:hover {
+      border-color: #007bff;
+    }
+
+    .upload-box i {
+      font-size: 40px;
+      color: #007bff;
+    }
+
+    :root {
+      --sidebar-width: 250px;
+      --sidebar-bg: rgb(48, 72, 156);
+      --sidebar-color: #f8f9fa;
+      --header-height: 60px;
+      --main-bg: #f4f7f9;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background-color: var(--main-bg);
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+    }
+
+    .wrapper {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: var(--sidebar-width);
+      background-color: var(--sidebar-bg);
+      color: var(--sidebar-color);
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      overflow-y: auto;
+      z-index: 1000;
+      transition: width 0.3s ease;
+    }
+
+    .sidebar-header {
+      padding: 1rem;
+      text-align: center;
+    }
+
+    .sidebar-menu .list-group-item {
+      background-color: transparent;
+      color: var(--sidebar-color);
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: 0;
+      cursor: pointer;
+    }
+
+    .sidebar-menu .list-group-item.active,
+    .sidebar-menu .list-group-item:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .sidebar-menu .list-group-item i {
+      margin-right: 1rem;
+      width: 20px;
+    }
+
+    .sidebar-menu .menu-category {
+      text-transform: uppercase;
+      font-size: 0.75rem;
+      color: #adb5bd;
+      padding: 1rem 1.5rem 0.5rem;
+    }
+
+    /* Main Content */
+    .main-content {
+      margin-left: var(--sidebar-width);
+      width: 100%;
+      padding: 1rem;
+      transition: margin-left 0.3s ease;
+    }
+
+    /* Header */
+    .header {
+      background-color: #fff;
+      height: var(--header-height);
+      padding: 0 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+      margin-bottom: 1rem;
+      border-radius: 8px;
+    }
+
+    .header .search-bar {
+      width: 400px;
+      border: 1px solid #e0e0e0;
+      border-radius: 5px;
+    }
+
+    .header .search-bar .form-control {
+      border: none;
+      box-shadow: none;
+    }
+
+    .header .header-icons i {
+      color: #6c757d;
+      font-size: 1.2rem;
+      margin-left: 1rem;
+      cursor: pointer;
+    }
+
+    .header .user-info {
+      display: flex;
+      align-items: center;
+      margin-left: 1rem;
+    }
+
+    .header .user-info .user-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background-color: #e9ecef;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      color: #495057;
+      margin-right: 0.5rem;
+    }
+
+    /* Content Box */
+    .content-box {
+      background-color: #fff;
+      padding: 1rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    }
+
+    /* Table Actions */
+    .table-actions .btn-group .btn {
+      border-radius: 50%;
+      width: 30px;
+      height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+    }
+
+    .pagination-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-top: 1rem;
+    }
+
+    footer {
+      background-color: white;
+      z-index: 1040;
+      width: 83.6%;
+      position: fixed;
+      bottom: 0;
+      left: 28.1ch;
+    }
+
+    /* Remove underline from all links */
+    a,
+    a:hover,
+    a:focus,
+    a:active,
+    a:visited {
+      text-decoration: none !important;
+      outline: none !important;
+      box-shadow: none !important;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="wrapper">
+    <!-- Sidebar -->
+    <nav class="sidebar">
+      <div class="sidebar-header">
+        <h4>RVM</h4>
+      </div>
+      <div class="list-group sidebar-menu">
+        <div class="menu-category">Menu</div>
+        <a href="dashboard.html" class="list-group-item list-group-item-action active"><i class="fas fa-home"></i> Dashboard</a>
+
+        <div class="menu-category">OPD</div>
+        <a href="#" class="list-group-item list-group-item-action"><i class="fas fa-user-plus"></i> Patient Registration</a>
+
+        <div class="menu-category">Emergency</div>
+        <a href="#" class="list-group-item list-group-item-action"><i class="fas fa-ambulance"></i> Emergency Patient</a>
+
+        <div class="menu-category">Help Desk</div>
+        <a href="#" class="list-group-item list-group-item-action"><i class="fas fa-headset"></i> Service Desk</a>
+
+        <div class="menu-category">Diagnostics</div>
+        <a href="#" class="list-group-item list-group-item-action"><i class="fas fa-flask"></i> Centres</a>
+
+        <div class="menu-category">Human Resource Management</div>
+        <a href="#" class="list-group-item list-group-item-action"><i class="fas fa-users"></i> Employees</a>
+        <a href="#" class="list-group-item list-group-item-action"><i class="fas fa-sitemap"></i> Unit Management</a>
+        <a href="#" class="list-group-item list-group-item-action"><i class="fas fa-graduation-cap"></i> Trainings</a>
+        <a href="#" class="list-group-item list-group-item-action"><i class="fas fa-notes-medical"></i> Health Reports</a>
+        <a href="#" class="list-group-item list-group-item-action"><i class="fas fa-syringe"></i> Vaccination Reports</a>
+
+        <div class="menu-category">Placements</div>
+        <a href="#" class="list-group-item list-group-item-action"><i class="fas fa-building"></i> Placements Cell</a>
+        <a href="#" class="list-group-item list-group-item-action"><i class="fas fa-clipboard-list"></i> Interviews</a>
+
+        <div class="menu-category">Referral Agents</div>
+        <a href="#" class="list-group-item list-group-item-action"><i class="fas fa-user-friends"></i> Referral Membership</a>
+
+        <div class="menu-category">Patients Management</div>
+        <a href="#" class="list-group-item list-group-item-action"><i class="fas fa-file-medical"></i> Patient Records</a>
+
+        <div class="menu-category">Marketing & Campaign</div>
+        <a href="#" class="list-group-item list-group-item-action"><i class="fas fa-bullhorn"></i> Campaigns</a>
+
+        <div class="menu-category">Rooms Management</div>
+        <a href="#" class="list-group-item list-group-item-action"><i class="fas fa-door-open"></i> Rooms Management</a>
+
+        <div class="menu-category">Settings</div>
+        <a href="HRM.html" class="list-group-item list-group-item-action"><i class="fas fa-cog"></i> General Settings</a>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="main-content">
+      <!-- Header -->
+      <header class="header d-flex justify-content-between align-items-center">
+        <div class="d-flex align-items-center">
+          <form class="d-flex me-3">
+            <button class="btn btn-light me-2" type="submit"><i class="fas fa-bars"></i></button>
+            <input class="form-control me-2" type="search" placeholder="Search..." aria-label="Search">
+          </form>
+        </div>
+        <div class="d-flex align-items-center">
+          <div class="header-icons me-3">
+            <i class="fas fa-bed"></i>
+            <i class="fas fa-expand"></i>
+            <i class="fas fa-moon"></i>
+            <i class="fas fa-bell"></i>
+          </div>
+          <div class="user-info d-flex align-items-center">
+            <div class="user-avatar text-white bg-info rounded-circle d-flex align-items-center justify-content-center">
+              lv
+            </div>
+            <div>
+              <div class="fw-bold dropdown">
+                <a role="button" data-bs-toggle="dropdown" aria-expanded="false" style="color: black;">lvktch</a>
+                <ul class="dropdown-menu">
+                  <li>
+                    <a class="dropdown-item" href="index.html">Logout</a>
+                  </li>
+                </ul>
+              </div>
+              <div class="small text-muted">Master Panel</div>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Dashboard Stats -->
+      <div class="row g-3 mb-4">
+        <div class="col-md-4">
+          <div class="card p-3">
+            <h6>REGISTRATIONS</h6>
+            <h4>7.46k</h4>
+            <small class="text-muted">Male | Female</small>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card p-3">
+            <h6>REGISTRATIONS</h6>
+            <h4>7.46k</h4>
+            <small class="text-muted">Walkin | D Care | Emerg</small>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card p-3">
+            <h6>STAFF INFO</h6>
+            <h4>19.52k</h4>
+            <small class="text-success">+3.67%</small>
+          </div>
+        </div>
+      </div>
+
+      <!-- More Sections -->
+      <div class="row g-3">
+        <div class="col-md-4">
+          <div class="card p-3">
+            <h6>Consultants</h6>
+            <p class="small text-muted">How Does Link Tracking Works?</p>
+            <p class="small">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card p-3">
+            <h6>Department Info</h6>
+            <ul class="list-unstyled mb-0">
+              <li>Human Resource <span class="float-end text-muted">100 Members</span></li>
+              <li>Finance <span class="float-end text-muted">10 Members</span></li>
+              <li>Administration <span class="float-end text-muted">800 Members</span></li>
+              <li>IT <span class="float-end text-muted">50 Members</span></li>
+              <li>Medical <span class="float-end text-muted">600 Members</span></li>
+            </ul>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card p-3">
+            <h6>Team Management</h6>
+            <ul class="list-unstyled mb-0">
+              <li>Pediatrician <span class="float-end text-muted">5 Mem</span></li>
+              <li>Psychologist <span class="float-end text-muted">25 Mem</span></li>
+              <li>Cardiology <span class="float-end text-muted">5 Mem</span></li>
+              <li>Dermatologists <span class="float-end text-muted">10 Mem</span></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Finance Section -->
+      <div class="row g-3 mt-2">
+        <div class="col-md-4">
+          <div class="card p-3 text-center">
+            <h6>Total Revenue</h6>
+            <h4>₹2.39k</h4>
+            <span class="text-success">+6.24%</span>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card p-3 text-center">
+            <h6>Total Expenditure</h6>
+            <h4>₹19.52k</h4>
+            <span class="text-success">+3.67%</span>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card p-3 text-center">
+            <h6>Total Pending</h6>
+            <h4>₹14.80k</h4>
+            <span class="text-danger">-4.80%</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="text-secondary small p-2 d-flex justify-content-between align-items-center">
+      <p class="mb-0">R.V.M Hospitals © Peramson Software. All Rights Reserved.</p>
+      <p class="mb-0">Design & develop by Peramsons Software</p>
+    </div>
+  </footer>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

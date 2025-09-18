@@ -1,0 +1,939 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>R.V.M Hospitals Specialization</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link href="rvm.png" rel="icon" sizes="16*16">
+
+    <style>
+        :root {
+            --sidebar-width: 250px;
+            --sidebar-bg: rgb(48, 72, 156);
+            --sidebar-color: #f8f9fa;
+            --header-height: 60px;
+            --main-bg: #f4f7f9;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: var(--main-bg);
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+
+        .upload-box {
+            border: 2px dashed #ccc;
+            border-radius: 10px;
+            padding: 40px;
+            text-align: center;
+            cursor: pointer;
+            background-color: #f9f9f9;
+            transition: border 0.3s;
+        }
+
+        .upload-box:hover {
+            border-color: #007bff;
+        }
+
+        .upload-box i {
+            font-size: 40px;
+            color: #007bff;
+        }
+
+        .wrapper {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* --- Sidebar Styles --- */
+        .sidebar {
+            width: var(--sidebar-width);
+            background-color: var(--sidebar-bg);
+            color: var(--sidebar-color);
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            overflow-y: auto;
+            z-index: 1000;
+            transition: width 0.3s ease;
+        }
+
+        .sidebar-header {
+            padding: 1rem;
+            text-align: center;
+        }
+
+        .sidebar-menu .list-group-item {
+            background-color: transparent;
+            color: var(--sidebar-color);
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0;
+            cursor: pointer;
+        }
+
+        .sidebar-menu .list-group-item.active,
+        .sidebar-menu .list-group-item:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar-menu .list-group-item i {
+            margin-right: 1rem;
+            width: 20px;
+        }
+
+        .sidebar-menu .menu-category {
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            color: #adb5bd;
+            padding: 1rem 1.5rem 0.5rem;
+        }
+
+        /* --- Main Content Styles --- */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            width: 100%;
+            padding: 1rem;
+            transition: margin-left 0.3s ease;
+        }
+
+        /* --- Header Styles --- */
+        .header {
+            background-color: #fff;
+            height: var(--header-height);
+            padding: 0 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            margin-bottom: 1rem;
+            border-radius: 8px;
+        }
+
+        .header .search-bar {
+            width: 400px;
+            border: 1px solid #e0e0e0;
+            border-radius: 5px;
+        }
+
+        .header .search-bar .form-control {
+            border: none;
+            box-shadow: none;
+        }
+
+        .header .header-icons i {
+            color: #6c757d;
+            font-size: 1.2rem;
+            margin-left: 1rem;
+            cursor: pointer;
+        }
+
+        .header .user-info {
+            display: flex;
+            align-items: center;
+            margin-left: 1rem;
+        }
+
+        .header .user-info .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #e9ecef;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #495057;
+            margin-right: 0.5rem;
+        }
+
+        .dept-card {
+            background-color: #fff;
+            position: fixed;
+            top: 70px;
+            left: 30ch;
+            width: 82%;
+            z-index: 950;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+            border: none;
+            border-radius: 12px;
+        }
+
+        .dept-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 18px;
+        }
+
+        .dept-title {
+            margin: 0;
+            font-weight: 600;
+            font-size: 15px;
+            color: #333;
+        }
+
+        .dept-breadcrumb {
+            margin: 0;
+            font-size: 13px;
+            background: transparent;
+        }
+
+        .dept-breadcrumb a {
+            text-decoration: none;
+            color: black;
+        }
+
+        .dept-breadcrumb .active {
+            color: #6c757d;
+        }
+
+        .dept-breadcrumb .breadcrumb-item+.breadcrumb-item::before {
+            content: "›";
+            color: #6c757d;
+        }
+
+        /* --- Main Content Box --- */
+        .content-box {
+            background-color: #fff;
+            padding: 1rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        /* --- Table Actions --- */
+        .table-actions .btn-group .btn {
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+        }
+
+        .table-actions .btn-primary {
+            background-color: #0d6efd;
+            border-color: #0d6efd;
+        }
+
+        .table-actions .btn-warning {
+            background-color: #ffc107;
+            border-color: #ffc107;
+        }
+
+        .table-actions .btn-danger {
+            background-color: #dc3545;
+            border-color: #dc3545;
+        }
+
+        a,
+        a:hover,
+        a:focus,
+        a:active,
+        a:visited 
+        {
+            text-decoration: none !important;
+            outline: none !important;
+            box-shadow: none !important;
+        }
+
+        footer {
+            background-color: white;
+            z-index: 1040;
+            width: 83.6%;
+            position: fixed;
+            bottom: 0;
+            left: 28.1ch;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="wrapper">
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h4>RVM</h4>
+            </div>
+            <div class="list-group sidebar-menu">
+                <div class="menu-category">Menu</div>
+                <a href="dashboard.html" class="list-group-item list-group-item-action"><i class="fas fa-home"></i> Dashboard</a>
+
+                <div class="menu-category">OPD</div>
+                <a href="#" class="list-group-item list-group-item-action"><i class="fas fa-user-plus"></i> Patient
+                    Registration</a>
+
+                <div class="menu-category">Emergency</div>
+                <a href="#" class="list-group-item list-group-item-action"><i class="fas fa-ambulance"></i> Emergency
+                    Patient</a>
+
+                <div class="menu-category">Help Desk</div>
+                <a href="#" class="list-group-item list-group-item-action"><i class="fas fa-headset"></i> Service
+                    Desk</a>
+
+                <div class="menu-category">Diagnostics</div>
+                <a href="#" class="list-group-item list-group-item-action"><i class="fas fa-flask"></i> Centres</a>
+
+                <div class="menu-category">Human Resource Management</div>
+                <a href="#" class="list-group-item list-group-item-action"><i class="fas fa-users"></i> Employees</a>
+                <a href="#" class="list-group-item list-group-item-action"><i class="fas fa-sitemap"></i> Unit
+                    Management</a>
+                <a href="#" class="list-group-item list-group-item-action"><i class="fas fa-graduation-cap"></i>
+                    Trainings</a>
+                <a href="#" class="list-group-item list-group-item-action"><i class="fas fa-notes-medical"></i> Health
+                    Reports</a>
+                <a href="#" class="list-group-item list-group-item-action"><i class="fas fa-syringe"></i> Vaccination
+                    Reports</a>
+
+                <div class="menu-category">Placements</div>
+                <a href="#" class="list-group-item list-group-item-action"><i class="fas fa-building"></i> Placements
+                    Cell</a>
+                <a href="#" class="list-group-item list-group-item-action"><i class="fas fa-clipboard-list"></i>
+                    Interviews</a>
+
+                <div class="menu-category">Referral Agents</div>
+                <a href="#" class="list-group-item list-group-item-action"><i class="fas fa-user-friends"></i> Referral
+                    Membership</a>
+
+                <div class="menu-category">Patients Management</div>
+                <a href="#" class="list-group-item list-group-item-action"><i class="fas fa-file-medical"></i> Patient
+                    Records</a>
+
+                <div class="menu-category">Marketing & Campaign</div>
+                <a href="#" class="list-group-item list-group-item-action"><i class="fas fa-bullhorn"></i> Campaigns</a>
+
+                <div class="menu-category">Vendor</div>
+                <!-- If there are vendor-specific links, you can add them here -->
+
+                <div class="menu-category">Rooms Management</div>
+                <a href="#" class="list-group-item list-group-item-action"><i class="fas fa-door-open"></i> Rooms
+                    Management</a>
+
+                <div class="menu-category">Settings</div>
+                <a href="HRM.html" class="list-group-item list-group-item-action active"><i class="fas fa-cog"></i> General
+                    Settings</a>
+            </div>
+        </nav>
+
+        <div class="main-content">
+            <header class="header d-flex justify-content-between align-items-center">
+                <div class="d-flex align-items-center">
+                    <form class="d-flex me-3">
+                        <button class="btn btn-light me-2" type="submit"><i class="fas fa-bars"></i></button>
+                        <input class="form-control me-2" type="search" placeholder="Search..." aria-label="Search">
+                        <!-- <button class="btn btn-primary" type="submit"><i class="fas fa-search"></i></button> -->
+                    </form>
+                </div>
+                <div class="d-flex align-items-center">
+                    <div class="header-icons me-3">
+                        <i class="fas fa-bed"></i>
+                        <i class="fas fa-expand"></i>
+                        <i class="fas fa-moon"></i>
+                        <i class="fas fa-bell"></i>
+                    </div>
+                    <div class="user-info d-flex align-items-center">
+                        <div
+                            class="user-avatar text-white bg-info rounded-circle d-flex align-items-center justify-content-center">
+                            lv</div>
+                        <div>
+                            <div class="fw-bold dropdown">
+                                <a role="button" data-bs-toggle="dropdown" aria-expanded="false" style="color: black;">
+                                    lvktch
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="index.html">Logout</a></li>
+                                </ul>
+                            </div>
+                            <div class="small text-muted">Master Panel</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card dept-card">
+                    <div class="card-body dept-header">
+                        <h6 class="dept-title">SPECIALIZATION</h6>
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb dept-breadcrumb">
+                                <li class="breadcrumb-item"><a href="dashboard.html">Dashboards</a></li>
+                                <li class="breadcrumb-item active">Specialization</li>
+                            </ol>
+                        </nav>
+                    </div>
+                </div>
+            </header>
+
+            <style>
+                .header {
+                    position: fixed;
+                    top: 0;
+                    left: 115;
+                    width: 82%;
+                    height: 70px;
+                    /* adjust based on your header height */
+                    background: #fff;
+                    /* keeps it solid */
+                    border-bottom: 1px solid #ddd;
+                    padding: 0 20px;
+                    z-index: 1000;
+                    /* keeps it above other content */
+                }
+
+                .content {
+                    margin-top: 70px;
+                    /* same as header height */
+                    padding: 20px;
+                }
+            </style>
+
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <div class="jumbotron">
+            <!-- <div class="content-box"> -->
+
+                <div class="card">
+                    <div class="card-header">
+                        <nav class="navbar navbar-expand-lg bg-body-tertiary">
+                            <div class="container-fluid">
+                                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                                    <ul class="navbar-nav me-auto mb-2 mb-lg-0 ">
+                                        <li class="nav-item">
+                                            <a class="btn " href="#" role="button"
+                                                style="background-color: rgb(48, 72, 156); color:white;"
+                                                data-bs-toggle="modal" data-bs-target="#Specialization">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                    fill="currentColor" class="bi bi-file-earmark-plus"
+                                                    viewBox="0 0 16 16">
+                                                    <path
+                                                        d="M8 6.5a.5.5 0 0 1 .5.5v1.5H10a.5.5 0 0 1 0 1H8.5V11a.5.5 0 0 1-1 0V9.5H6a.5.5 0 0 1 0-1h1.5V7a.5.5 0 0 1 .5-.5" />
+                                                    <path
+                                                        d="M14 4.5V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5zm-3 0A1.5 1.5 0 0 1 9.5 3V1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V4.5z" />
+                                                </svg> Specialization</a>
+                                        </li>&nbsp; &nbsp;
+
+                                        <li class="nav-item">
+                                            <a class="btn " href="#" role="button"
+                                                style="background-color: rgb(11, 151, 104); color: white;"
+                                                data-bs-toggle="modal" data-bs-target="#Import">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                    fill="currentColor" class="bi bi-file-earmark-plus"
+                                                    viewBox="0 0 16 16">
+                                                    <path
+                                                        d="M8 6.5a.5.5 0 0 1 .5.5v1.5H10a.5.5 0 0 1 0 1H8.5V11a.5.5 0 0 1-1 0V9.5H6a.5.5 0 0 1 0-1h1.5V7a.5.5 0 0 1 .5-.5" />
+                                                    <path
+                                                        d="M14 4.5V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5zm-3 0A1.5 1.5 0 0 1 9.5 3V1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V4.5z" />
+                                                </svg> Import</a>
+                                        </li>&nbsp; &nbsp;
+
+                                        <li class="nav-item">
+                                            <a class="btn btn-primary" href="username.csv" accept=".csv" role="button"
+                                                download>
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                    fill="currentColor" class="bi bi-arrow-right-square"
+                                                    viewBox="0 0 16 16">
+                                                    <path fill-rule="evenodd"
+                                                        d="M15 2a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1zM0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2zm4.5 5.5a.5.5 0 0 0 0 1h5.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5z" />
+                                                </svg></i> Export</a>
+
+                                        </li>&nbsp; &nbsp;
+
+                                    </ul>
+                                    <form class="d-flex" role="search">
+                                        <input class="form-control me-2" type="search" placeholder="Search"
+                                            aria-label="Search" />
+
+                                    </form>
+                                </div>
+                            </div>
+                        </nav>
+                        <!-- Table -->
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th scope="col" style="background-color: rgb(48, 72, 156); color: white;">S.No</th>
+                                    <th scope="col" style="background-color: rgb(48, 72, 156); color: white;">
+                                        Specialization
+                                        Name
+                                    </th>
+                                    <th scope="col" style="background-color: rgb(48, 72, 156); color: white;">
+                                        Specialization
+                                        Code
+                                    </th>
+                                    <th scope="col" style="background-color: rgb(48, 72, 156); color: white;">Status
+                                    </th>
+                                    <th scope="col" style="background-color: rgb(48, 72, 156); color: white;">Created
+                                        Date</th>
+                                    <th scope="col" style="background-color: rgb(48, 72, 156); color: white;">
+                                        <center>Action</center>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th scope="row">1</th>
+                                    <td>Mark</td>
+                                    <td>Otto</td>
+                                    <td><span class="badge text-bg-success">Active</span></td>
+                                    <td>22-04-25,08:30 PM</td>
+                                    <td>
+                                        <center>
+                                            <a class="btn " href="#" role="button"
+                                                style="background-color: rgb(48, 72, 156); color:white;"
+                                                data-bs-toggle="modal" data-bs-target="#view">
+                                                <svg style="color: white;" xmlns="http://www.w3.org/2000/svg" width="16"
+                                                    height="16" fill="currentColor" class="bi bi-eye-fill"
+                                                    viewBox="0 2 16 16">
+                                                    <path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0" />
+                                                    <path
+                                                        d="M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8m8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7" />
+                                                </svg>
+                                            </a>
+                                            <a class="btn btn-primary" href="#" role="button" data-bs-toggle="modal"
+                                                data-bs-target="#edit">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                    fill="currentColor" class="bi bi-pencil-fill" viewBox="0 1 16 16">
+                                                    <path
+                                                        d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.5.5 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11z" />
+                                                </svg>
+                                            </a>
+                                            <a class="btn btn-danger " href="#" role="button" data-bs-toggle="modal"
+                                                data-bs-target="#dele">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                    fill="currentColor" class="bi bi-trash-fill" viewBox="0 0 16 16">
+                                                    <path
+                                                        d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5M8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5m3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0" />
+                                                </svg>
+                                            </a>
+                                        </center>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">2</th>
+                                    <td>Fark</td>
+                                    <td>Chitto</td>
+                                    <td><span class="badge text-bg-danger">deactive</span></td>
+                                    <td>22-04-25,08:30 PM</td>
+                                    <td>
+                                        <center>
+                                            <a class="btn " href="#" role="button"
+                                                style="background-color: rgb(48, 72, 156); color:white;"
+                                                data-bs-toggle="modal" data-bs-target="#view2">
+                                                <svg style="color: white;" xmlns="http://www.w3.org/2000/svg" width="16"
+                                                    height="16" fill="currentColor" class="bi bi-eye-fill"
+                                                    viewBox="0 2 16 16">
+                                                    <path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0" />
+                                                    <path
+                                                        d="M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8m8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7" />
+                                                </svg>
+                                            </a>
+                                            <a class="btn btn-primary" href="#" role="button" data-bs-toggle="modal"
+                                                data-bs-target="#edit2">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                    fill="currentColor" class="bi bi-pencil-fill" viewBox="0 1 16 16">
+                                                    <path
+                                                        d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.5.5 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11z" />
+                                                </svg>
+                                            </a>
+                                            <a class="btn btn-danger " href="#" role="button" data-bs-toggle="modal"
+                                                data-bs-target="#dele2">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                    fill="currentColor" class="bi bi-trash-fill" viewBox="0 0 16 16">
+                                                    <path
+                                                        d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5M8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5m3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0" />
+                                                </svg>
+                                            </a>
+                                        </center>
+                                    </td>
+
+                                </tr>
+
+                        </table>
+                        <nav aria-label="...">
+                            <ul class="pagination offset-md-5">
+                                <li class="page-item disabled ">
+                                    <a class="page-link" style="border-radius: 10px;">Previous</a>
+                                </li>&nbsp;&nbsp;
+                                <li class="page-item  "><a class="page-link" href="#"
+                                        style="border-radius: 10px; background-color: rgb(48, 72, 156); color: white;">1</a>
+                                </li>&nbsp;&nbsp;
+                                <li class="page-item ">
+                                    <a class="page-link" href="#" style="border-radius: 10px;">Next</a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+            <!-- container -->
+            <div class="container">
+                <div class="modal" id="Specialization" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+                    aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header" style="background-color: rgb(48, 72, 156);">
+                                <h1 class="modal-title fs-5" id="exampleModalLabel" style="color: white;">Create a new
+                                    Specialization</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+                                    style="background-color: white;"></button>
+                            </div>
+                            <div class="form-group">
+                                <form action="" method="post">
+                                    <div class="modal-body">
+                                        <b><label for="" class="form-label">Specialization Name <span
+                                                    class="text-danger">*</span></label></b>
+                                        <input type="text" class="form-control" placeholder="Enter Specialization Name"
+                                            id="a" required>
+                                        <b><label for="" class="form-label">Specialization Code <span
+                                                    class="text-danger">*</span></label></b>
+                                        <input type="text" class="form-control" placeholder="Ex:CD" id="b" required>
+                                        <b><label for="">Short Description</label></b>
+                                        <textarea class="form-control" placeholder="Enter Short Description" id="c"
+                                            required></textarea>
+                                    </div>
+
+                                    <center>
+                                        <button type="button" class="btn"
+                                            style="background-color: rgb(48, 72, 156); color: white;">Create</button>
+                                        <button type="button" class="btn " data-bs-dismiss="modal"
+                                            style="background-color: rgb(28, 167, 202); color: white;">Close</button>
+                                    </center>
+                                    <br>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="container">
+                    <div class="modal" id="Import" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+                        aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header" style="background-color: rgb(48, 72, 156);">
+                                    <h1 class="modal-title fs-5" id="exampleModalLabel" style="color: white;">Add Bulk
+                                        Data</h1>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+                                        style="background-color: white;"></button>
+                                </div>
+                                <div class="form-group">
+                                    <form action="" method="post">
+                                        <div class="modal-body">
+                                            <p>Sample File: Sample CSV</p>
+                                            <label class="upload-box w-100" for="csvFile">
+                                                <i class="bi bi-cloud-arrow-up"></i>
+                                                <p class="mt-2">Drop CSV file here or click to upload</p>
+                                                <input type="file" id="csvFile" accept=".csv" hidden>
+                                            </label>
+                                        </div>
+                                        <center>
+                                            <button type="submit" class="btn"
+                                                style="background-color: rgb(48, 72, 156); color: white;">Upload
+                                                file</button>
+                                        </center>
+                                    </form>
+                                </div>
+                                <br>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="container">
+                    <div class="modal" id="view" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+                        aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header" style="background-color: rgb(48, 72, 156);">
+                                    <h1 class="modal-title fs-5" id="exampleModalLabel" style="color: white;">View
+                                        Specialization</h1>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+                                        style="background-color: white;"></button>
+                                </div>
+                                <div class="form-group">
+
+                                    <div class="modal-body">
+
+                                        <table class="table table-bordered">
+                                            <tr>
+                                                <th>Specialization Name</th>
+                                                <td>fagaf</td>
+                                            </tr>
+
+                                            <tr>
+                                                <th>Specialization Code</th>
+                                                <td>CD</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Short Description</th>
+                                                <td>afjalfjaofija</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Status</th>
+                                                <td><span class="badge text-bg-success">Active</span></td>
+                                            </tr>
+                                            <tr>
+                                                <th>Created Date</th>
+                                                <td>22-04-25,08:30 PM</td>
+                                            </tr>
+                                        </table>
+
+                                    </div>
+                                    <center>
+                                        <button type="button" class="btn btn-primary"
+                                            data-bs-dismiss="modal">Close</button>
+                                    </center>
+                                    <br>
+                                </div>
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="container">
+                    <div class="modal" id="view2" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+                        aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header" style="background-color: rgb(48, 72, 156);">
+                                    <h1 class="modal-title fs-5" id="exampleModalLabel" style="color: white;">View
+                                        Specialization</h1>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+                                        style="background-color: white;"></button>
+                                </div>
+                                <div class="form-group">
+
+                                    <div class="modal-body">
+
+                                        <table class="table table-bordered">
+                                            <tr>
+                                                <th>Specialization Name</th>
+                                                <td>fagaf</td>
+                                            </tr>
+
+                                            <tr>
+                                                <th>Specialization Code</th>
+                                                <td>CD</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Short Description</th>
+                                                <td>afjalfjaofija</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Status</th>
+                                                <td><span class="badge text-bg-danger">deactive</span></td>
+                                            </tr>
+                                            <tr>
+                                                <th>Created Date</th>
+                                                <td>22-04-25,08:30 PM</td>
+                                            </tr>
+                                        </table>
+
+                                    </div>
+                                    <center>
+                                        <button type="button" class="btn btn-primary"
+                                            data-bs-dismiss="modal">Close</button>
+                                    </center>
+                                    <br>
+                                </div>
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="container">
+                    <div class="modal" id="edit" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+                        aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header" style="background-color: rgb(48, 72, 156);">
+                                    <h1 class="modal-title fs-5" id="exampleModalLabel" style="color: white;">Edit
+                                        Specialization</h1>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+                                        style="background-color: white;"></button>
+                                </div>
+                                <div class="form-group">
+                                    <form action="" method="post">
+                                        <div class="modal-body">
+                                            <b><label for="" class="form-label">Specialization Name <span
+                                                        class="text-danger">*</span></label></b>
+                                            <input type="text" class="form-control"
+                                                placeholder="Enter Specialization Name" id="a" required>
+                                            <b><label for="" class="form-label">Specialization Code <span
+                                                        class="text-danger">*</span></label></b>
+                                            <input type="text" class="form-control" placeholder="Ex:CD" id="b" required>
+                                            <b><label for="">Short Description</label></b>
+                                            <textarea class="form-control" placeholder="Enter Short Description" id="c"
+                                                required></textarea>
+                                        </div>
+
+                                        <center>
+                                            <button type="button" class="btn"
+                                                style="background-color: rgb(48, 72, 156); color: white;">Create</button>
+                                            <button type="button" class="btn " data-bs-dismiss="modal"
+                                                style="background-color: rgb(28, 167, 202); color: white;">Close</button>
+                                        </center>
+                                        <br>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="container">
+                        <div class="modal" id="edit2" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+                            aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content">
+                                    <div class="modal-header" style="background-color: rgb(48, 72, 156);">
+                                        <h1 class="modal-title fs-5" id="exampleModalLabel" style="color: white;">Edit
+                                            Specialization</h1>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close" style="background-color: white;"></button>
+                                    </div>
+                                    <div class="form-group">
+                                        <form action="" method="post">
+                                            <div class="modal-body">
+                                                <b><label for="" class="form-label">Specialization Name <span
+                                                            class="text-danger">*</span></label></b>
+                                                <input type="text" class="form-control"
+                                                    placeholder="Enter Specialization Name" id="a" required>
+                                                <b><label for="" class="form-label">Specialization Code <span
+                                                            class="text-danger">*</span></label></b>
+                                                <input type="text" class="form-control" placeholder="Ex:CD" id="b"
+                                                    required>
+                                                <b><label for="">Short Description</label></b>
+                                                <textarea class="form-control" placeholder="Enter Short Description"
+                                                    id="c" required></textarea>
+                                            </div>
+
+                                            <center>
+                                                <button type="button" class="btn"
+                                                    style="background-color: rgb(48, 72, 156); color: white;">Create</button>
+                                                <button type="button" class="btn " data-bs-dismiss="modal"
+                                                    style="background-color: rgb(28, 167, 202); color: white;">Close</button>
+                                            </center>
+                                            <br>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="container">
+                            <div class="modal" id="dele" data-bs-backdrop="static" data-bs-keyboard="false"
+                                tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content">
+                                        <div class="modal-header" style="background-color: rgb(245, 63, 63);">
+                                            <h1 class="modal-title fs-5" id="exampleModalLabel" style="color: white;">
+                                                Delete
+                                                Specialization</h1>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Close" style="background-color: white;"></button>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="modal-body">
+                                                <center><svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"
+                                                        fill="currentColor" class="bi bi-trash3" viewBox="0 0 16 16"
+                                                        style="color: rgb(245, 63, 63);">
+                                                        <path
+                                                            d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5M11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47M8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5" />
+                                                    </svg>
+                                                </center>
+                                                <br>
+                                                <p class="text-center">Are you sure you want to delete</p>
+                                                <p class="text-center text-danger">Specialization?</p>
+
+                                            </div>
+
+                                            <center>
+                                                <button type="button" class="btn" data-bs-dismiss="modal"
+                                                    style="background-color: rgb(122, 123, 127); color: white;">cancel</button>&nbsp;
+                                                <button type="button" class="btn"
+                                                    style="background-color: rgb(245, 63, 63); color: white;">Yes,delete
+                                                    it!</button>
+                                            </center>
+
+
+                                            <br>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="container">
+                    <div class="modal" id="dele2" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+                        aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header" style="background-color: rgb(245, 63, 63);">
+                                    <h1 class="modal-title fs-5" id="exampleModalLabel" style="color: white;">Delete
+                                        Specialization</h1>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+                                        style="background-color: white;"></button>
+                                </div>
+                                <div class="form-group">
+                                    <div class="modal-body">
+                                        <center><svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"
+                                                fill="currentColor" class="bi bi-trash3" viewBox="0 0 16 16"
+                                                style="color: rgb(245, 63, 63);">
+                                                <path
+                                                    d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5M11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47M8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5" />
+                                            </svg>
+                                        </center>
+                                        <br>
+                                        <p class="text-center">Are you sure you want to delete</p>
+                                        <p class="text-center text-danger">Specialization?</p>
+
+                                    </div>
+
+                                    <center>
+                                        <button type="button" class="btn" data-bs-dismiss="modal"
+                                            style="background-color: rgb(122, 123, 127); color: white;">cancel</button>&nbsp;
+                                        <button type="button" class="btn"
+                                            style="background-color: rgb(245, 63, 63); color: white;">Yes,delete
+                                            it!</button>
+                                    </center>
+
+
+                                    <br>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+
+        <footer>
+            <div class="text-secondary small p-2 d-flex justify-content-between align-items-center">
+                <p class="mb-0">R.V.M Hospitals © Peramson Software.All Rights Reserved.</p>
+                <p class="mb-0">Design & develop by Peramsons Software</p>
+            </div>
+        </footer>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+        crossorigin="anonymous"></script>
+
+</body>
+
+</html>
